@@ -2,7 +2,9 @@ package com.raphaelbarauna.projetoLoja.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Product implements Serializable{
@@ -23,6 +28,7 @@ private static final long serialVersionUID = 1L;
 	private String name;
 	private Double price;
 	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name="Product_Category",
 	      joinColumns = @JoinColumn(name = "product_id"),
@@ -30,6 +36,12 @@ private static final long serialVersionUID = 1L;
 	)
 	
 	private List<Category> categories = new ArrayList<>();
+	
+	//Nao ter itens repetidos,mapeado pelo produto
+	@JsonIgnore
+	@OneToMany(mappedBy = "id.product")
+	private Set<ItemOrder> items = new HashSet<>();
+	
 	
 	public Product() {
 		
@@ -40,6 +52,15 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 		this.name = name;
 		this.price = price;
+	}
+	
+	@JsonIgnore
+	public List<Order> getOrders(){
+		List<Order> list = new ArrayList<>();
+		for (ItemOrder x : items) {
+			list.add(x.getOrder());
+		}
+		return list;
 	}
 
 	public Integer getId() {
@@ -73,6 +94,15 @@ private static final long serialVersionUID = 1L;
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
+	
+	public Set<ItemOrder> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemOrder> items) {
+		this.items = items;
+	}
+
 
 	@Override
 	public int hashCode() {

@@ -28,7 +28,7 @@ public class Order implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Integer idOrder;
 	
 	@JsonFormat(pattern="dd/MM/yyyy hh:mm")
 	private Date instante;
@@ -54,20 +54,29 @@ public class Order implements Serializable{
 		
 	}
 
-	public Order(Integer id, Date instante, Customer customer, Adress deliveryAdress) {
+	public Order(Integer ioOrder, Date instante, Customer customer, Adress deliveryAdress) {
 		super();
-		this.id = id;
+		this.idOrder = ioOrder;
 		this.instante = instante;
 		this.customer = customer;
 		this.deliveryAdress = deliveryAdress;
 	}
 
+	public double getValorTotal() {
+		
+		double soma = 0.0;
+		for(ItemOrder ip : items) {
+			soma = soma + ip.getSubTotal();
+		}
+		return soma;
+	}
+	
 	public Integer getId() {
-		return id;
+		return idOrder;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setId(Integer idOrder) {
+		this.idOrder = idOrder;
 	}
 
 	public Date getInstante() {
@@ -116,7 +125,7 @@ public class Order implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((idOrder == null) ? 0 : idOrder.hashCode());
 		return result;
 	}
 
@@ -129,12 +138,31 @@ public class Order implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Order other = (Order) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (idOrder == null) {
+			if (other.idOrder != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!idOrder.equals(other.idOrder))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Pedido número");
+		builder.append(getId());
+		builder.append(getInstante());
+		builder.append(", Cliente: ");
+		builder.append(getCustomer().getName());
+		builder.append("Situação do pagamento");
+		builder.append(getPayment().getStatus().getDescription());
+		builder.append("\nDetalhes:\n");
+		for(ItemOrder ip : getItems()) {
+			builder.append(ip.toString());
+		}
+		builder.append("Valor total: ");
+		builder.append(getValorTotal());
+		return builder.toString();
 	}
 
 

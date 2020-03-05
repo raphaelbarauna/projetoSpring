@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.raphaelbarauna.projetoLoja.DTO.CategoryDTO;
 import com.raphaelbarauna.projetoLoja.domain.Category;
-import com.raphaelbarauna.projetoLoja.domain.Customer;
 import com.raphaelbarauna.projetoLoja.repositories.CategoryRepository;
 import com.raphaelbarauna.projetoLoja.services.exception.DataIntegrityException;
 import com.raphaelbarauna.projetoLoja.services.exception.ObjectNotFoundException;

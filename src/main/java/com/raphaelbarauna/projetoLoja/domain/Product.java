@@ -34,7 +34,6 @@ private static final long serialVersionUID = 1L;
 	      joinColumns = @JoinColumn(name = "product_id"),
 	      inverseJoinColumns = @JoinColumn(name = "category_id")
 	)
-	
 	private List<Category> categories = new ArrayList<>();
 	
 	//Nao ter itens repetidos,mapeado pelo produto

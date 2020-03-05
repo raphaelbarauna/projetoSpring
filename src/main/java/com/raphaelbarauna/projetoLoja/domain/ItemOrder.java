@@ -1,6 +1,8 @@
 package com.raphaelbarauna.projetoLoja.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,7 +19,7 @@ private static final long serialVersionUID = 1L;
 	private ItemOrderPK id = new ItemOrderPK();
 	
 	private Double discount;
-	private Integer Quantity;
+	private Integer quantity;
 	private Double price;
 	
 	
@@ -31,10 +33,13 @@ private static final long serialVersionUID = 1L;
 		id.setOrder(order);
 		id.setProduct(product);
 		this.discount = discount;
-		Quantity = quantity;
+		this.quantity = quantity;
 		this.price = price;
 	}
 
+	public double getSubTotal() {
+		return (price - discount) * quantity;
+	}
 	
 	@JsonIgnore
 	public Order getOrder() {
@@ -45,6 +50,14 @@ private static final long serialVersionUID = 1L;
 		return id.getProduct();
 	}
 
+	public void setOrder(Order order) {
+		id.setOrder(order);
+	}
+	
+	public void setProduct(Product product) {
+		id.setProduct(product);
+	}
+	
 	public ItemOrderPK getId() {
 		return id;
 	}
@@ -66,12 +79,12 @@ private static final long serialVersionUID = 1L;
 
 
 	public Integer getQuantity() {
-		return Quantity;
+		return quantity;
 	}
 
 
 	public void setQuantity(Integer quantity) {
-		Quantity = quantity;
+		this.quantity = quantity;
 	}
 
 
@@ -110,6 +123,27 @@ private static final long serialVersionUID = 1L;
 			return false;
 		return true;
 	}
+
+
+	@Override
+	public String toString() {
+		Locale meuLocal = new Locale( "pt", "BR" ); 
+        NumberFormat nfVal = NumberFormat.getCurrencyInstance( meuLocal ); 
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduct().getName());
+		builder.append(", Qte: ");
+		builder.append(getQuantity());
+		builder.append(",Preço Unitário: ");
+		builder.append(getPrice());
+		builder.append(", Subtotal: ");
+		builder.append(getSubTotal());
+		builder.append("/n");
+
+		return builder.toString();
+	}
+
+
+
 
 	
 	

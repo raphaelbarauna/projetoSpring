@@ -1,20 +1,9 @@
 package com.raphaelbarauna.projetoLoja.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.raphaelbarauna.projetoLoja.domain.enums.TypeCustomer;
@@ -32,8 +21,11 @@ public class Customer implements Serializable{
 	@Column(unique=true)
 	private String email;
 	private String cpfOrCnpj;
-	private Integer type;	
-	
+	private Integer type;
+
+	@OneToMany
+	@OrderColumn(name = "id")
+	private Text[] listaText = new Text[10];
 	
 	@OneToMany(mappedBy="customer", cascade=CascadeType.ALL)
 	private List<Adress> adresses = new ArrayList<>();
@@ -45,11 +37,11 @@ public class Customer implements Serializable{
 	//os pedidos nao vao ser serializados
 	@JsonIgnore
 	@OneToMany(mappedBy="customer")
-	private List<Order> orders = new ArrayList<>();	
-	
+	private List<Order> orders = new ArrayList<>();
+
 
 	public Customer() {
-		
+
 	}
 
 	public Customer(Integer id, String name, String email, String cpfOrCnpj, TypeCustomer type) {
@@ -124,6 +116,22 @@ public class Customer implements Serializable{
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
+	public void adiciona(Text listaText) {
+		for (int i = 0; i < this.listaText.length; i++) {
+			if (this.listaText[i] == null) {
+				this.listaText[i] = listaText;
+				break;
+			}
+		}
+	}
+
+	public Text[] getListaText() {
+		return listaText;
+	}
+
+	public void setListaText(Text[] listaText) {
+		this.listaText = listaText;
+	}
 
 	@Override
 	public int hashCode() {
@@ -149,6 +157,16 @@ public class Customer implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Customer{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", cpfOrCnpj='" + cpfOrCnpj + '\'' +
+				", type=" + type +
+				", listaText=" + Arrays.toString(listaText) +
+				'}';
+	}
 }
